@@ -4,12 +4,30 @@
   <meta charset="UTF-8">
   <title>퍼즐 게임</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
+    const db = firebase.firestore();
+  </script>
 </head>
 <body>
   <div id="setup">
     <h2>퍼즐 설정</h2>
     <label>카테고리:
-      <select id="category">
+      <select id="category" onchange="loadImages()">
         <option value="person_female">인물 - 여자</option>
         <option value="person_male">인물 - 남자</option>
         <option value="nature">자연</option>
@@ -31,9 +49,9 @@
         <option value="fractal">프랙탈</option>
       </select>
     </label>
-    <button onclick="startPuzzle()">시작하기</button>
   </div>
 
+  <div id="thumbnailContainer"></div>
   <canvas id="puzzleCanvas"></canvas>
 
   <script src="script.js"></script>
