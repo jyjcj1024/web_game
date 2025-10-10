@@ -75,7 +75,7 @@ button:hover {
 
 .image-source-tabs {
   display: flex;
-  margin-bottom: -1px; /* 아래 테두리와 겹치게 */
+  margin-bottom: -1px;
 }
 
 .tab-button {
@@ -83,7 +83,7 @@ button:hover {
   padding: 12px;
   cursor: pointer;
   background-color: #e9ecef;
-  color: #495057; /* 탭 글씨 색상 */
+  color: #495057;
   border: 1px solid var(--border-color);
   border-bottom: none;
   border-radius: 8px 8px 0 0;
@@ -93,7 +93,7 @@ button:hover {
 
 .tab-button.active {
   background-color: var(--container-bg);
-  color: var(--primary-color); /* 활성 탭 글씨 색상 */
+  color: var(--primary-color);
   border-bottom: 1px solid var(--container-bg);
   position: relative;
   top: 1px;
@@ -191,8 +191,6 @@ button:hover {
   transition: transform 0.2s ease-out, box-shadow 0.2s;
   user-select: none;
   touch-action: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  border: 1px solid #fff; /* 조각 구분선 */
 }
 
 .puzzle-piece.dragging {
@@ -200,6 +198,7 @@ button:hover {
   z-index: 1000;
   cursor: grabbing;
   box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.5));
 }
 
 .drop-target {
