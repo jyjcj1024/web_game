@@ -1,1 +1,13 @@
-
+{
+  "title": "Casual Game Portal",
+  "gameCategories": "Game Categories",
+  "puzzle": "Puzzle",
+  "puzzleGame1": "Puzzle Game 1",
+  "puzzleGame2": "Puzzle Game 2",
+  "action": "Action",
+  "actionGame1": "Action Game 1",
+  "leftAd": "Left Ad Area",
+  "futureContent": "Future Content",
+  "emptyContent": "This space is empty.",
+  "rightAd": "Right Ad Area"
+}
