@@ -14,8 +14,28 @@ label {
   margin: 10px 0;
 }
 
+#thumbnailContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.thumbnail {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.thumbnail:hover {
+  border-color: #007bff;
+}
+
 canvas {
   border: 1px solid #ccc;
   display: block;
   margin-top: 20px;
+  max-width: 100%;
 }
