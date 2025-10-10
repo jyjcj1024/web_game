@@ -1,5 +1,3 @@
-// puzzles_script.js
-
 const db = firebase.firestore();
 let timerInterval = null, elapsedTime = 0, puzzlePieces = [], pieceWidth, pieceHeight, puzzleContainer, isGameRunning = false;
 let selectedImageUrl = null; // 선택된 이미지 URL을 저장할 변수
@@ -107,25 +105,81 @@ function startGame() {
   img.src = selectedImageUrl;
 }
 
-// ... (이 아래로 createPuzzlePieces, shuffleAndDisplayPieces, addDragListeners 등 나머지 함수는 이전과 거의 동일합니다)
 function createPuzzlePieces(img, pieces) {
-  puzzlePieces = []; puzzleContainer.innerHTML = '';
-  for (let y = 0; y < pieces; y++) {
-    for (let x = 0; x < pieces; x++) {
-      const piece = document.createElement('div'); piece.className = 'puzzle-piece';
-      piece.style.width = `${pieceWidth}px`; piece.style.height = `${pieceHeight}px`; piece.style.backgroundImage = `url(${img.src})`;
-      piece.style.backgroundSize = `${puzzleContainer.offsetWidth}px ${puzzleContainer.offsetHeight}px`; piece.style.backgroundPosition = `-${x * pieceWidth}px -${y * pieceHeight}px`;
-      piece.dataset.correctX = x; piece.dataset.correctY = y;
-      addDragListeners(piece); puzzlePieces.push(piece);
+  puzzlePieces = [];
+  puzzleContainer.innerHTML = '';
+  const shape = document.getElementById('shape').value;
+
+  if (shape === 'square') {
+    // 기존 사각형 로직
+    for (let y = 0; y < pieces; y++) {
+      for (let x = 0; x < pieces; x++) {
+        const piece = document.createElement('div');
+        piece.className = 'puzzle-piece';
+        piece.style.width = `${pieceWidth}px`;
+        piece.style.height = `${pieceHeight}px`;
+        piece.style.backgroundImage = `url(${img.src})`;
+        piece.style.backgroundSize = `${puzzleContainer.offsetWidth}px ${puzzleContainer.offsetHeight}px`;
+        piece.style.backgroundPosition = `-${x * pieceWidth}px -${y * pieceHeight}px`;
+        piece.dataset.correctX = x;
+        piece.dataset.correctY = y;
+        addDragListeners(piece);
+        puzzlePieces.push(piece);
+      }
+    }
+  } else if (shape === 'jigsaw') {
+    // 새로운 직소 퍼즐 로직
+    const pieceShapes = [];
+    for (let y = 0; y < pieces; y++) {
+      pieceShapes[y] = [];
+      for (let x = 0; x < pieces; x++) {
+        const top = y === 0 ? 0 : -pieceShapes[y - 1][x].bottom;
+        const left = x === 0 ? 0 : -pieceShapes[y][x - 1].right;
+        const bottom = y === pieces - 1 ? 0 : (Math.random() > 0.5 ? 1 : -1);
+        const right = x === pieces - 1 ? 0 : (Math.random() > 0.5 ? 1 : -1);
+        pieceShapes[y][x] = { top, bottom, left, right };
+      }
+    }
+
+    for (let y = 0; y < pieces; y++) {
+      for (let x = 0; x < pieces; x++) {
+        const shapeInfo = pieceShapes[y][x];
+        const piece = document.createElement('div');
+        piece.className = 'puzzle-piece';
+        const knobSize = pieceWidth * 0.2;
+        piece.style.width = `${pieceWidth + knobSize}px`;
+        piece.style.height = `${pieceHeight + knobSize}px`;
+        piece.style.backgroundImage = `url(${img.src})`;
+        
+        const bgWidth = puzzleContainer.offsetWidth;
+        const bgHeight = puzzleContainer.offsetHeight;
+        piece.style.backgroundSize = `${bgWidth}px ${bgHeight}px`;
+        piece.style.backgroundPosition = `calc(${-x * pieceWidth}px + ${knobSize/2}px) calc(${-y * pieceHeight}px + ${knobSize/2}px)`;
+
+        const clipPath = generateJigsawPath(shapeInfo, pieceWidth, pieceHeight);
+        piece.style.clipPath = clipPath;
+        piece.style.webkitClipPath = clipPath;
+
+        piece.dataset.correctX = x;
+        piece.dataset.correctY = y;
+        addDragListeners(piece);
+        puzzlePieces.push(piece);
+      }
     }
   }
-  for (let i = 0; i < pieces * pieces; i++) { const dropTarget = document.createElement('div'); dropTarget.className = 'drop-target'; puzzleContainer.appendChild(dropTarget); }
+
+  // 조각을 놓을 수 있는 그리드 배경 생성
+  for (let i = 0; i < pieces * pieces; i++) {
+    const dropTarget = document.createElement('div');
+    dropTarget.className = 'drop-target';
+    puzzleContainer.appendChild(dropTarget);
+  }
 }
 
 function shuffleAndDisplayPieces() {
   const containerRect = puzzleContainer.getBoundingClientRect();
   puzzlePieces.forEach((piece) => {
-    const randomX = Math.random() * (window.innerWidth - pieceWidth);
+    const randomX = Math.random() * (window.innerWidth - piece.offsetWidth);
     const randomY = containerRect.bottom + 10 + Math.random() * 80;
     piece.style.top = `${randomY}px`;
     piece.style.left = `${randomX}px`;
@@ -146,7 +200,8 @@ function addDragListeners(piece) {
     function onMove(e) {
       if (!piece.classList.contains('dragging')) return; e.preventDefault();
       const touch = e.touches ? e.touches[0] : e;
-      piece.style.left = `${touch.clientX - offsetX}px`; piece.style.top = `${touch.clientY - offsetY}px`;
+      piece.style.left = `${touch.clientX - offsetX}px`;
+      piece.style.top = `${touch.clientY - offsetY}px`;
     }
     function onUp(e) {
       if (!piece.classList.contains('dragging')) return;
@@ -164,7 +219,8 @@ function snapToGrid(piece) {
     const gridX = Math.floor((pieceCenterX - containerRect.left) / pieceWidth); const gridY = Math.floor((pieceCenterY - containerRect.top) / pieceHeight);
     piece.style.left = `${containerRect.left + gridX * pieceWidth}px`;
     piece.style.top = `${containerRect.top + gridY * pieceHeight}px`;
-    piece.dataset.currentX = gridX; piece.dataset.currentY = gridY;
+    piece.dataset.currentX = gridX;
+    piece.dataset.currentY = gridY;
     checkCompletion();
   }
 }
@@ -209,4 +265,44 @@ function closeWinModal() {
 
   isGameRunning = false;
   resetTimer();
+}
+
+function generateJigsawPath(shape, w, h) {
+  const knobSize = w * 0.2;
+  const halfW = w / 2;
+  const halfH = h / 2;
+
+  const m = knobSize / 2;
+
+  const points = {
+    topLeft: [m, m],
+    topRight: [w - m, m],
+    bottomLeft: [m, h - m],
+    bottomRight: [w - m, h - m]
+  };
+
+  let path = `M ${points.topLeft.join(' ')} `;
+
+  if (shape.top !== 0) {
+    path += `C ${m + w*0.3},${m} ${m + w*0.2},${m - shape.top * knobSize} ${m + halfW},${m - shape.top * knobSize} `;
+    path += `S ${m + w*0.8},${m - shape.top * knobSize} ${points.topRight.join(' ')} `;
+  } else { path += `L ${points.topRight.join(' ')} `; }
+
+  if (shape.right !== 0) {
+    path += `C ${w-m},${m + h*0.3} ${w - m + shape.right * knobSize},${m + h*0.2} ${w - m + shape.right * knobSize},${m + halfH} `;
+    path += `S ${w - m + shape.right * knobSize},${m + h*0.8} ${points.bottomRight.join(' ')} `;
+  } else { path += `L ${points.bottomRight.join(' ')} `; }
+
+  if (shape.bottom !== 0) {
+    path += `C ${w-m - w*0.3},${h-m} ${w-m - w*0.2},${h-m + shape.bottom * knobSize} ${w-m - halfW},${h-m + shape.bottom * knobSize} `;
+    path += `S ${w-m - w*0.8},${h-m + shape.bottom * knobSize} ${points.bottomLeft.join(' ')} `;
+  } else { path += `L ${points.bottomLeft.join(' ')} `; }
+
+  if (shape.left !== 0) {
+    path += `C ${m},${h-m - h*0.3} ${m + shape.left * knobSize},${h-m - h*0.2} ${m + shape.left * knobSize},${h-m - halfH} `;
+    path += `S ${m + shape.left * knobSize},${h-m - h*0.8} ${points.topLeft.join(' ')} `;
+  } else { path += `L ${points.topLeft.join(' ')} `; }
+
+  path += 'Z';
+  return `path('${path}')`;
 }
