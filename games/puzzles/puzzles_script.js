@@ -213,12 +213,32 @@ function addDragListeners(piece) {
 }
   
 function snapToGrid(piece) {
-  const containerRect = puzzleContainer.getBoundingClientRect(); const pieceRect = piece.getBoundingClientRect();
-  const pieceCenterX = pieceRect.left + pieceRect.width / 2; const pieceCenterY = pieceRect.top + pieceRect.height / 2;
-  if (pieceCenterX > containerRect.left && pieceCenterX < containerRect.right && pieceCenterY > containerRect.top && pieceCenterY < containerRect.bottom) {
-    const gridX = Math.floor((pieceCenterX - containerRect.left) / pieceWidth); const gridY = Math.floor((pieceCenterY - containerRect.top) / pieceHeight);
-    piece.style.left = `${containerRect.left + gridX * pieceWidth}px`;
-    piece.style.top = `${containerRect.top + gridY * pieceHeight}px`;
+  const containerRect = puzzleContainer.getBoundingClientRect();
+  const pieceRect = piece.getBoundingClientRect();
+  const pieceCenterX = pieceRect.left + pieceRect.width / 2;
+  const pieceCenterY = pieceRect.top + pieceRect.height / 2;
+
+  if (
+    pieceCenterX > containerRect.left && pieceCenterX < containerRect.right &&
+    pieceCenterY > containerRect.top && pieceCenterY < containerRect.bottom
+  ) {
+    const gridX = Math.floor((pieceCenterX - containerRect.left) / pieceWidth);
+    const gridY = Math.floor((pieceCenterY - containerRect.top) / pieceHeight);
+
+    // === 여기부터 수정된 부분 ===
+    const shape = document.getElementById('shape').value;
+    let margin = 0;
+    // 클래식 퍼즐일 경우에만 보이지 않는 여백(margin)을 계산합니다.
+    if (shape === 'jigsaw') {
+      const knobSize = pieceWidth * 0.2;
+      margin = knobSize / 2;
+    }
+
+    // 계산된 여백만큼 위치를 보정해줍니다.
+    piece.style.left = `${containerRect.left + gridX * pieceWidth - margin}px`;
+    piece.style.top = `${containerRect.top + gridY * pieceHeight - margin}px`;
+    // === 여기까지 수정된 부분 ===
+    
     piece.dataset.currentX = gridX;
     piece.dataset.currentY = gridY;
     checkCompletion();
