@@ -10,6 +10,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js"></script>
   <script>
+    // Firebase 설정
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -26,6 +27,8 @@
 <body>
   <div id="setup">
     <h2>퍼즐 설정</h2>
+
+    <!-- 카테고리 선택 -->
     <label>카테고리:
       <select id="category" onchange="loadImages()">
         <option value="person_female">인물 - 여자</option>
@@ -37,21 +40,30 @@
         <option value="music">악보</option>
       </select>
     </label>
+
+    <!-- 조각 수 입력 -->
     <label>조각 수:
       <input type="number" id="pieces" value="5" min="2" max="100">
     </label>
+
+    <!-- 조각 모양 선택 -->
     <label>조각 모양:
       <select id="shape">
         <option value="square">사각형</option>
-        <option value="classic">전형적 퍼즐</option>
-        <option value="triangle">삼각형</option>
-        <option value="star">별 모양</option>
-        <option value="fractal">프랙탈</option>
+        <!-- 향후 확장 가능 -->
       </select>
+    </label>
+
+    <!-- 사용자 이미지 업로드 -->
+    <label>내 이미지 업로드:
+      <input type="file" id="uploadImage" accept="image/*">
     </label>
   </div>
 
+  <!-- 썸네일 이미지 목록 -->
   <div id="thumbnailContainer"></div>
+
+  <!-- 퍼즐 캔버스 -->
   <canvas id="puzzleCanvas"></canvas>
 
   <script src="script.js"></script>
