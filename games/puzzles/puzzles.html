@@ -7,9 +7,12 @@
   <link rel="stylesheet" href="puzzles_style.css">
   <script src="https://unpkg.com/i18next/i18next.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
   <script>
+    // ================================================================
+    // 중요! 이 부분에 본인의 Firebase 프로젝트 정보를 정확히 입력하세요.
+    // 여기가 틀리면 추천 이미지가 절대로 나오지 않습니다.
+    // ================================================================
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -29,17 +32,59 @@
       <button class="tab-button" onclick="showImageSource('url')" data-i18n="tab_url">URL</button>
       <button class="tab-button" onclick="showImageSource('upload')" data-i18n="tab_upload">파일 업로드</button>
     </div>
-    <div id="source-firebase" class="source-content active"><div class="control-group"><label for="category" data-i18n="categoryLabel">카테고리:</label><select id="category" onchange="loadImages()"><option value="person_female" data-i18n="category_female">인물 - 여자</option><option value="person_male" data-i18n="category_male">인물 - 남자</option><option value="nature" data-i18n="category_nature">자연</option><option value="building" data-i18n="category_building">건물</option><option value="animal" data-i18n="category_animal">동물</option><option value="space" data-i18n="category_space">우주</option><option value="music" data-i18n="category_music">악보</option></select></div><div id="thumbnailContainer"></div></div>
-    <div id="source-url" class="source-content"><div class="control-group"><label for="imageUrl" data-i18n="externalUrlLabel">외부 이미지 URL:</label><input type="text" id="imageUrl" data-i18n="[placeholder]externalUrlPlaceholder" placeholder="이미지 주소를 붙여넣으세요"><button onclick="startWithExternalImage()" data-i18n="loadImageButton">불러오기</button></div></div>
-    <div id="source-upload" class="source-content"><div class="control-group"><label for="uploadImage" data-i18n="uploadLabel">내 이미지 업로드:</label><input type="file" id="uploadImage" accept="image/*"></div></div>
+    <div id="source-firebase" class="source-content active">
+      <div class="control-group">
+        <label for="category" data-i18n="categoryLabel">카테고리:</label>
+        <select id="category" onchange="loadImages()">
+          <option value="person_female" data-i18n="category_female">인물 - 여자</option>
+          <option value="person_male" data-i18n="category_male">인물 - 남자</option>
+          <option value="nature" data-i18n="category_nature">자연</option>
+          <option value="building" data-i18n="category_building">건물</option>
+          <option value="animal" data-i18n="category_animal">동물</option>
+          <option value="space" data-i18n="category_space">우주</option>
+          <option value="music" data-i18n="category_music">악보</option>
+        </select>
+      </div>
+      <div id="thumbnailContainer"></div>
+    </div>
+    <div id="source-url" class="source-content">
+      <div class="control-group">
+        <label for="imageUrl" data-i18n="externalUrlLabel">외부 이미지 URL:</label>
+        <input type="text" id="imageUrl" data-i18n="[placeholder]externalUrlPlaceholder" placeholder="이미지 주소를 붙여넣으세요">
+        <button onclick="startWithExternalImage()" data-i18n="loadImageButton">불러오기</button>
+      </div>
+    </div>
+    <div id="source-upload" class="source-content">
+      <div class="control-group">
+        <label for="uploadImage" data-i18n="uploadLabel">내 이미지 업로드:</label>
+        <input type="file" id="uploadImage" accept="image/*">
+      </div>
+    </div>
     <hr class="divider">
-    <div class="control-group"><label for="pieces" data-i18n="piecesLabel">조각 수 (가로):</label><input type="number" id="pieces" value="5" min="2" max="50"></div>
-    <div class="control-group"><label for="shape" data-i18n="shapeLabel">조각 모양:</label><select id="shape"><option value="square" data-i18n="shape_square">사각형</option></select></div>
+    <div class="control-group">
+      <label for="pieces" data-i18n="piecesLabel">조각 수 (가로):</label>
+      <input type="number" id="pieces" value="5" min="2" max="50">
+    </div>
+    <div class="control-group">
+      <label for="shape" data-i18n="shapeLabel">조각 모양:</label>
+      <select id="shape">
+        <option value="square" data-i18n="shape_square">사각형</option>
+      </select>
+    </div>
   </div>
-  <div id="game-info"><div id="timer"><span data-i18n="timerPrefix">경과 시간:</span> 0.00초</div></div>
+  <div id="game-info">
+    <div id="timer"><span data-i18n="timerPrefix">경과 시간:</span> 0.00초</div>
+  </div>
   <div id="puzzle-container"></div>
-  <div id="win-modal" class="hidden"><div class="modal-content"><h2 data-i18n="winTitle">🎉 축하합니다! 🎉</h2><p data-i18n="winMessage">퍼즐을 완성하셨습니다!</p><p id="final-time"></p><button onclick="closeWinModal()" data-i18n="newGameButton">새 게임</button></div></div>
-  <script src="i18n.js"></script>
+  <div id="win-modal" class="hidden">
+    <div class="modal-content">
+      <h2 data-i18n="winTitle">🎉 축하합니다! 🎉</h2>
+      <p data-i18n="winMessage">퍼즐을 완성하셨습니다!</p>
+      <p id="final-time"></p>
+      <button onclick="closeWinModal()" data-i18n="newGameButton">새 게임</button>
+    </div>
+  </div>
+  
   <script src="puzzles_script.js"></script>
 </body>
 </html>
