@@ -1,1 +1,13 @@
-
+{
+  "title": "캐쥬얼 게임 포털",
+  "gameCategories": "게임 카테고리",
+  "puzzle": "퍼즐",
+  "puzzleGame1": "퍼즐 게임 1",
+  "puzzleGame2": "퍼즐 게임 2",
+  "action": "액션",
+  "actionGame1": "액션 게임 1",
+  "leftAd": "좌측 광고 영역",
+  "futureContent": "추후 콘텐츠",
+  "emptyContent": "여기는 비워둡니다.",
+  "rightAd": "우측 광고 영역"
+}
