@@ -2,22 +2,28 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>캐쥬얼 게임 포털</title>
+  <title data-i18n="title">캐쥬얼 게임 포털</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/i18next/i18next.min.js"></script>
 </head>
 <body>
   <div id="sidebar">
     <div class="category-list">
-      <h3>게임 카테고리</h3>
-      <strong>퍼즐</strong>
-      <span class="game-link" onclick="loadGame('games/puzzle1.html')">퍼즐 게임 1</span>
-      <span class="game-link" onclick="loadGame('games/puzzle2.html')">퍼즐 게임 2</span>
-      <strong>액션</strong>
-      <span class="game-link" onclick="loadGame('games/action1.html')">액션 게임 1</span>
+      <div id="language-selector">
+        <select onchange="changeLanguage(this.value)">
+          <option value="ko">한국어</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      
+      <h3 data-i18n="gameCategories">게임 카테고리</h3>
+      <strong data-i18n="puzzle">퍼즐</strong>
+      <span class="game-link" onclick="loadGame('games/puzzles/puzzles.html')" data-i18n="puzzleGame1">퍼즐 게임 1</span>      
+      <strong data-i18n="action">액션</strong>
+      <span class="game-link" onclick="loadGame('games/action1.html')" data-i18n="actionGame1">액션 게임 1</span>
     </div>
     <div class="ad-box">
-      <p>좌측 광고 영역</p>
-      <!-- 애드센스 광고 코드 삽입 가능 -->
+      <p data-i18n="leftAd">좌측 광고 영역</p>
     </div>
   </div>
 
@@ -27,15 +33,15 @@
 
   <div id="rightbar">
     <div class="right-content">
-      <h3>추후 콘텐츠</h3>
-      <p>여기는 비워둡니다.</p>
+      <h3 data-i18n="futureContent">추후 콘텐츠</h3>
+      <p data-i18n="emptyContent">여기는 비워둡니다.</p>
     </div>
     <div class="ad-box">
-      <p>우측 광고 영역</p>
-      <!-- 애드센스 광고 코드 삽입 가능 -->
+      <p data-i18n="rightAd">우측 광고 영역</p>
     </div>
   </div>
 
+  <script src="i18n.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
